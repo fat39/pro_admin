@@ -96,11 +96,17 @@ class FilterList(object):
 
             if self.option.is_multi:
                 if exist:
-                    param_dict.getlist(self.option.name).remove(pk)
+                    tmp_list = param_dict.getlist(self.option.name)
+                    tmp_list.remove(pk)
+                    param_dict.setlist(self.option.name,tmp_list)
+                    # param_dict.getlist(self.option.name).remove(pk)
                 else:
                     param_dict.appendlist(self.option.name, pk)
             else:
-                param_dict[self.option.name] = pk
+                if exist:
+                    param_dict.pop(self.option.name)
+                else:
+                    param_dict[self.option.name] = pk
             url = "{0}?{1}".format(base_url, param_dict.urlencode())
             val = tpl.format(url, 'active' if exist else '', text)
             yield mark_safe(val)
@@ -175,9 +181,9 @@ class ChangeList(object):
             else:
                 _field = self.model_cls._meta.get_field(option.field_or_func)
                 if isinstance(_field, ForeignKey):
-                    data_list = FilterList(option, self, _field.rel.model.objects.all(), self.request.GET)
+                    data_list = FilterList(option, self, _field.related_model.objects.all(), self.request.GET)
                 elif isinstance(_field, ManyToManyField):
-                    data_list = FilterList(option, self, _field.rel.model.objects.all(), self.request.GET)
+                    data_list = FilterList(option, self, _field.related_model.objects.all(), self.request.GET)
                 else:
                     data_list = FilterList(option, self, _field.model.objects.all(), self.request.GET)
             yield data_list

@@ -30,7 +30,7 @@ class Menu(models.Model):
     菜单表
     """
     caption = models.CharField(verbose_name='菜单名称', max_length=32)
-    parent = models.ForeignKey('self', verbose_name='父菜单', related_name='p', null=True, blank=True)
+    parent = models.ForeignKey('self', verbose_name='父菜单', related_name='p', null=True, blank=True,on_delete=models.CASCADE)
 
     def __str__(self):
         prev = ""
@@ -55,7 +55,7 @@ class Permission(models.Model):
     # args = models.CharField(verbose_name='反向创建URL参数(元组格式)', max_length=64, null=True, blank=True)
     # query_params = models.CharField(verbose_name='其他参数', max_length=128, null=True, blank=True)
     url = models.CharField(max_length=128)
-    menu = models.ForeignKey(Menu, verbose_name='所属菜单', related_name='permissions', null=True, blank=True)
+    menu = models.ForeignKey(Menu, verbose_name='所属菜单', related_name='permissions', null=True, blank=True,on_delete=models.CASCADE)
 
     def __str__(self):
         return "%s" % (self.caption,)
