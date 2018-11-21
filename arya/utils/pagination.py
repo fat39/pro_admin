@@ -1,4 +1,3 @@
-import urllib.parse
 
 
 class Page(object):
@@ -78,6 +77,11 @@ class Page(object):
             self.query_params['page'] = self.current_page - 1
             prev = '<li><a href="%s?%s">上一页</a></li>' % (self.base_url,self.query_params.urlencode())
         page_list.append(prev)
+
+        self.query_params['page'] = 1
+        first = '<li><a href="%s?%s">首页</a></li>' % (self.base_url,self.query_params.urlencode())
+        page_list.append(first)
+
         for i in range(pager_start, pager_end + 1):
             self.query_params['page'] = i
             if self.current_page == i:
@@ -87,6 +91,12 @@ class Page(object):
                 tpl = '<li><a href="%s?%s">%s</a></li>' % (self.base_url, self.query_params.urlencode(), i,)
             page_list.append(tpl)
 
+
+        self.query_params['page'] = self.pager_count
+        last = '<li><a href="%s?%s">末页</a></li>' % (self.base_url, self.query_params.urlencode())
+        page_list.append(last)
+
+
         if self.current_page >= self.pager_count:
             nex = '<li><a href="#">下一页</a></li>'
         else:
@@ -95,3 +105,5 @@ class Page(object):
         page_list.append(nex)
         page_str = "".join(page_list)
         return page_str
+
+
